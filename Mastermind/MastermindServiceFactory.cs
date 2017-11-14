@@ -33,7 +33,8 @@ namespace Mastermind
     public int GetAppSettingAsInt(string key)
     {
       var appSetting = GetAppSetting(key);
-      if (int.TryParse(appSetting, out int appSettingAsInt))
+      int appSettingAsInt = 0;
+      if (int.TryParse(appSetting, out appSettingAsInt))
       {
         return appSettingAsInt;
       }

@@ -1,4 +1,4 @@
-﻿using Mastermind.Helpers;
+﻿
 using Mastermind.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,13 +7,11 @@ namespace Mastermind
 {
   public class MastermindScorer : IMastermindScorer
   {
-    private List<Code> secretCodeList;
-    private CodeComparer comparer;
+    private List<CodePiece> secretCodeList;
 
     public MastermindScorer(string secretCode)
     {
       secretCodeList = DecipherCode(secretCode);
-      comparer = new CodeComparer();
     }
 
     public string Score(string userInput)
@@ -21,31 +19,33 @@ namespace Mastermind
       var score = new List<string>();
       var userCode = DecipherCode(userInput);
 
-      var perfectMatches = secretCodeList.Intersect(userCode, comparer);
+      var perfectMatches = secretCodeList.Intersect(userCode);
+
       perfectMatches.ToList().ForEach(m => score.Add("+"));
 
-      var remainingSecretCode = secretCodeList.Except(perfectMatches, comparer).ToList();
-      var remainingUserCode = userCode.Except(perfectMatches, comparer).ToList();
-
-      remainingSecretCode.ForEach(secretCode =>
+      var imperfectMatches = secretCodeList.Except(perfectMatches);
+      foreach (var secretCodePiece in imperfectMatches)
       {
-        var code = remainingUserCode.FirstOrDefault(c => c.Value == secretCode.Value);
-        if (code != null)
+        var userCodePieces = userCode.Except(perfectMatches);
+        foreach (var userCodePiece in userCodePieces)
         {
-          score.Add("-");
-          remainingUserCode.Remove(code);
+          if ( userCodePiece.Value == secretCodePiece.Value && !userCodePiece.Matched)
+          {
+            score.Add("-");
+            userCodePiece.Matched = true;
+          }
         }
-      });
+      }      
 
-      return string.Concat(score.OrderByDescending(c => c));
+      return string.Concat(score);
     }
 
-    private List<Code> DecipherCode(string code)
+    private List<CodePiece> DecipherCode(string code)
     {
-      var codeList = new List<Code>();
+      var codeList = new List<CodePiece>();
       for (int i = 0; i < code?.Length; i++)
       {
-        codeList.Add(new Code() { Value = code[i], Index = i });
+        codeList.Add(new CodePiece() { Value = code[i], Index = i });
       }
       return codeList;
     }

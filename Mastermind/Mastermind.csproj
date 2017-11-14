@@ -45,8 +45,7 @@
     <Compile Include="MastermindDependencies.cs" />
     <Compile Include="MastermindService.cs" />
     <Compile Include="MastermindServiceFactory.cs" />
-    <Compile Include="Models\Code.cs" />
-    <Compile Include="Helpers\CodeComparer.cs" />
+    <Compile Include="Models\CodePiece.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MastermindScorer.cs" />
   </ItemGroup>
