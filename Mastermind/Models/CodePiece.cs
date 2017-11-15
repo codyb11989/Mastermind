@@ -10,22 +10,22 @@ namespace Mastermind.Models
 
     public override bool Equals(object obj)
     {
-      return this.Equals(obj as CodePiece);
+      return Equals(obj as CodePiece);
     }
 
     public bool Equals(CodePiece codePiece)
     {
-      if ( ReferenceEquals(codePiece, null))
+      if (ReferenceEquals(codePiece, null))
       {
         return false;
       }
 
-      if ( ReferenceEquals(this, codePiece))
+      if (ReferenceEquals(this, codePiece))
       {
         return true;
       }
 
-      if ( GetType() != codePiece.GetType())
+      if (GetType() != codePiece.GetType())
       {
         return false;
       }
@@ -35,14 +35,14 @@ namespace Mastermind.Models
 
     public override int GetHashCode()
     {
-      return (Value + Index).GetHashCode();
+      return Value ^ Index;
     }
 
     public static bool operator ==(CodePiece c, CodePiece p)
     {
-      if ( ReferenceEquals(c, null))
+      if (ReferenceEquals(c, null))
       {
-        if ( ReferenceEquals(p, null))
+        if (ReferenceEquals(p, null))
         {
           return true;
         }
