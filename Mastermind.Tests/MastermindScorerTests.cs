@@ -11,12 +11,12 @@ namespace Mastermind.Tests
     public void MastermindScorer(string secretCode, string userGuess, string result)
     {
       IMastermindScorer scorer = new MastermindScorer(secretCode);
-      scorer.Score("5615"); //ensures running the Score logic doesn't affect multiple scores on same instance      
+      scorer.Score("5615"); //ensures running the Score logic doesn't affect multiple scores on same instance
       scorer.Score(userGuess).ShouldBe(result);
     }
   }
 
-  class TestData
+  internal class TestData
   {
     public static IEnumerable TestCases
     {
@@ -38,6 +38,7 @@ namespace Mastermind.Tests
         yield return new TestCaseData("2644", "2444", "+++");
         yield return new TestCaseData("4442", "2333", "-");
         yield return new TestCaseData("6652", "1126", "--");
+        yield return new TestCaseData("5413", "4314", "+--");
       }
     }
   }

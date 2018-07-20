@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Mastermind.Models
 {
@@ -6,16 +7,25 @@ namespace Mastermind.Models
   {
     public char Value { get; set; }
     public int Index { get; set; }
-    public bool Matched { get; set; } = false;
+    public bool PerfectMatch { get; set; } = false;
+    public bool CloseMatch { get; set; } = false;
 
     public override bool Equals(object obj)
     {
       return Equals(obj as CodePiece);
     }
 
+    public static IEnumerable<CodePiece> DecipherCode(string code)
+    {
+      for (int i = 0; i < code?.Length; i++)
+      {
+        yield return new CodePiece() { Value = code[i], Index = i };
+      }
+    }
+
     public bool Equals(CodePiece codePiece)
     {
-      if (ReferenceEquals(codePiece, null))
+      if (codePiece is null)
       {
         return false;
       }
@@ -40,13 +50,11 @@ namespace Mastermind.Models
 
     public static bool operator ==(CodePiece c, CodePiece p)
     {
-      if (ReferenceEquals(c, null))
+      if (c is null && p is null)
       {
-        if (ReferenceEquals(p, null))
-        {
-          return true;
-        }
+        return true;
       }
+
       return c.Equals(p);
     }
 

@@ -3,9 +3,9 @@ using System.Configuration;
 
 namespace Mastermind.App
 {
-  class Program
+  internal class Program
   {
-    static void Main(string[] args)
+    private static void Main(string[] args)
     {
       do
       {
@@ -21,7 +21,7 @@ namespace Mastermind.App
       var service = new MastermindServiceFactory(new ConfigManager()).CreateService();
       service.StartNewGame();
 
-      Console.WriteLine(service.GetInsructions());      
+      Console.WriteLine(service.GetInstructions());
 
       for (int attemptsLeft = service.AllowedAttempts(); attemptsLeft > 0; attemptsLeft--)
       {
@@ -42,7 +42,7 @@ namespace Mastermind.App
     }
   }
 
-  class ConfigManager : IConfigurationManager
+  internal class ConfigManager : IConfigurationManager
   {
     public string GetAppSetting(string key)
     {

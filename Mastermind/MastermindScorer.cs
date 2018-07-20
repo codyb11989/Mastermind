@@ -1,5 +1,4 @@
-﻿
-using Mastermind.Models;
+﻿using Mastermind.Models;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,47 +6,49 @@ namespace Mastermind
 {
   public class MastermindScorer : IMastermindScorer
   {
-    private List<CodePiece> secretCodeList;
+    private readonly string secret;
 
-    public MastermindScorer(string secretCode)
+    public MastermindScorer(string secret)
     {
-      secretCodeList = DecipherCode(secretCode);
+      this.secret = secret;
     }
 
     public string Score(string userInput)
     {
-      var score = new List<string>();
-      var userCode = DecipherCode(userInput);
-
-      var perfectMatches = secretCodeList.Intersect(userCode);
-
-      perfectMatches.ToList().ForEach(m => score.Add("+"));
-
-      var imperfectMatches = secretCodeList.Except(perfectMatches);
-      foreach (var secretCodePiece in imperfectMatches)
-      {
-        var userCodePieces = userCode.Except(perfectMatches);
-        foreach (var userCodePiece in userCodePieces)
-        {
-          if ( userCodePiece.Value == secretCodePiece.Value && !userCodePiece.Matched)
-          {
-            score.Add("-");
-            userCodePiece.Matched = true;
-          }
-        }
-      }      
-
-      return string.Concat(score);
+      var secretCode = CodePiece.DecipherCode(secret).ToList();
+      var userCode = CodePiece.DecipherCode(userInput).ToList();
+      return $"{GetPerfectMatchScore(userCode, secretCode)}{GetCloseMatchScore(userCode, secretCode)}";
     }
 
-    private List<CodePiece> DecipherCode(string code)
+    private string GetPerfectMatchScore(List<CodePiece> userDecipher, List<CodePiece> secretDecipher) =>
+      new string('+', GetPerfectMatches(userDecipher, secretDecipher).Count());
+
+    private string GetCloseMatchScore(List<CodePiece> userDecipher, List<CodePiece> secretDecipher) =>
+      new string('-', GetCloseMatches(userDecipher, secretDecipher).Count());
+
+    private IEnumerable<CodePiece> GetPerfectMatches(List<CodePiece> userDecipher, List<CodePiece> secretDecipher)
     {
-      var codeList = new List<CodePiece>();
-      for (int i = 0; i < code?.Length; i++)
+      return userDecipher.Intersect(secretDecipher).Select(x =>
       {
-        codeList.Add(new CodePiece() { Value = code[i], Index = i });
+        x.PerfectMatch = true;
+        return x;
+      });
+    }
+
+    private IEnumerable<CodePiece> GetCloseMatches(List<CodePiece> userDecipher, List<CodePiece> secretDecipher)
+    {
+      foreach (var secretCodePiece in secretDecipher.Except(userDecipher.Where(x => x.PerfectMatch)))
+      {
+        foreach (var userCodePiece in userDecipher.Where(x => !x.PerfectMatch && !x.CloseMatch))
+        {
+          if (userCodePiece.Value == secretCodePiece.Value)
+          {
+            userCodePiece.CloseMatch = true;
+            yield return userCodePiece;
+            break;
+          }
+        }
       }
-      return codeList;
     }
   }
 }

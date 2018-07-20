@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Mastermind
 {
@@ -18,8 +19,8 @@ namespace Mastermind
 
     private string GenerateSecretCode()
     {
-      var random = new Random();
       var secretCode = "";
+      var random = new Random();
       for (int i = 0; i < dependencies.SecretCodeLength; i++)
       {
         secretCode += random.Next(1, 7); //learned the minValue is included but the maxValue is not
@@ -27,7 +28,7 @@ namespace Mastermind
       return secretCode;
     }
 
-    public string GetInsructions()
+    public string GetInstructions()
     {
       return $@"Secret code is {dependencies.SecretCodeLength} digits long and each digit can be between 1 and 6
 Plus sign (+) represents correct digit correct position
