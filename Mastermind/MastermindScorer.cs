@@ -21,34 +21,33 @@ namespace Mastermind
     }
 
     private string GetPerfectMatchScore(List<CodePiece> userDecipher, List<CodePiece> secretDecipher) =>
-      new string('+', GetPerfectMatches(userDecipher, secretDecipher).Count());
+      new string('+', GetPerfectMatchCount(userDecipher, secretDecipher));
 
     private string GetCloseMatchScore(List<CodePiece> userDecipher, List<CodePiece> secretDecipher) =>
-      new string('-', GetCloseMatches(userDecipher, secretDecipher).Count());
+      new string('-', GetCloseMatchCount(userDecipher, secretDecipher));
 
-    private IEnumerable<CodePiece> GetPerfectMatches(List<CodePiece> userDecipher, List<CodePiece> secretDecipher)
+    private int GetPerfectMatchCount(List<CodePiece> userDecipher, List<CodePiece> secretDecipher)
     {
-      return userDecipher.Intersect(secretDecipher).Select(x =>
+      return userDecipher.Intersect(secretDecipher).ToList().Select(x =>
       {
-        x.PerfectMatch = true;
+        secretDecipher.Remove(x);
+        userDecipher.Remove(x);
         return x;
-      });
+      }).Count();
     }
 
-    private IEnumerable<CodePiece> GetCloseMatches(List<CodePiece> userDecipher, List<CodePiece> secretDecipher)
+    private int GetCloseMatchCount(List<CodePiece> userDecipher, List<CodePiece> secretDecipher)
     {
-      foreach (var secretCodePiece in secretDecipher.Except(userDecipher.Where(x => x.PerfectMatch)))
+      return secretDecipher.Count(y =>
       {
-        foreach (var userCodePiece in userDecipher.Where(x => !x.PerfectMatch && !x.CloseMatch))
+        var closeMatch = userDecipher.FirstOrDefault(x => new CloseMatchComparer().Equals(x, y));
+        if (closeMatch != null)
         {
-          if (userCodePiece.Value == secretCodePiece.Value)
-          {
-            userCodePiece.CloseMatch = true;
-            yield return userCodePiece;
-            break;
-          }
+          userDecipher.Remove(closeMatch);
+          return true;
         }
-      }
+        return false;
+      });
     }
   }
 }

@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CloseMatchComparer.cs" />
     <Compile Include="IConfigurationManager.cs" />
     <Compile Include="IMastermindScorer.cs" />
     <Compile Include="MastermindDependencies.cs" />

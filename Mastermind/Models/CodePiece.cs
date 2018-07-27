@@ -7,8 +7,6 @@ namespace Mastermind.Models
   {
     public char Value { get; set; }
     public int Index { get; set; }
-    public bool PerfectMatch { get; set; } = false;
-    public bool CloseMatch { get; set; } = false;
 
     public override bool Equals(object obj)
     {
