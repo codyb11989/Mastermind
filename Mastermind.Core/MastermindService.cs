@@ -20,7 +20,7 @@ namespace Mastermind.Core
       var random = new Random();
       for (int i = 0; i < _settings.SecretCodeLength; i++)
       {
-        secretCode += random.Next(1, 7); //learned the minValue is included but the maxValue is not
+        secretCode += random.Next(_settings.MinimumAllowedNumber, _settings.MaximumAllowedNumber);
       }
       return secretCode;
     }
@@ -37,8 +37,10 @@ namespace Mastermind.Core
 
     public string GetInstructions()
     {
-      return $@"Secret code is {_settings.SecretCodeLength} digits long and each digit can be between 1 and 6
+      return $@"Secret code is {_settings.SecretCodeLength} digits long and each digit can be between {_settings.MinimumAllowedNumber} and {_settings.MaximumAllowedNumber}
+
 Plus sign (+) represents correct digit correct position
+
 Minus sign (-) represents correct digit wrong position";
     }
 

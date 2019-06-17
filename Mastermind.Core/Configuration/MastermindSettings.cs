@@ -6,5 +6,7 @@
     public string CorrectGuessMessage { get; set; }
     public string OutOfAttemptsMessage { get; set; }
     public int SecretCodeLength { get; set; }
+    public int MinimumAllowedNumber { get; set; }
+    public int MaximumAllowedNumber { get; set; }
   }
 }
